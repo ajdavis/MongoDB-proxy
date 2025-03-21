@@ -7,7 +7,7 @@ import mockupdb
 client = pymongo.MongoClient()
 # "Verbose" logs each message. Disable for speed.
 server = mockupdb.MockupDB(
-    auto_ismaster=True, request_timeout=9999999, port=5000, verbose=True)
+    auto_ismaster=False, request_timeout=9999999, port=5000, verbose=True)
 server.run()
 
 # "hello" is how clients detect if the server is part of a replica set, its
@@ -35,7 +35,7 @@ print(f"Listening on {server.uri}")
 # Process messages as they arrive. Single-threaded event loop.
 for request in server:
     try:
-        if request.command_name == "hello":
+        if request.command_name in ("hello", "ismaster"):
             request.reply(proxy_hello)
             continue
 
